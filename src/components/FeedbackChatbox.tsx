@@ -6,10 +6,12 @@ import makeStyles from "@mui/styles/makeStyles";
 import { styled } from '@mui/material/styles';
 import { DialogActions, DialogContent, IconButton, Stack, Typography } from "@mui/material";
 import FeedbackEditor from "./FeedbackEditor";
+import SubmittedPage from "./SubmittedPage";
 
 export interface FeedbackChatDialogProps {
   open: boolean;
   onClose: () => void;
+  setIsSubmitted: (value: boolean) => void;
 }
 
 const useStyles = makeStyles({
@@ -42,8 +44,9 @@ type FeedbackState = {
 
 function FeedbackChatDialog(props: FeedbackChatDialogProps) {
   const [feedback, setFeedback] = useState<FeedbackState>({ content: "", files: [] });
+  const [loading, setLoading] = useState(false)
 
-  const { onClose, open } = props;
+  const { onClose, open, setIsSubmitted } = props;
   const classes = useStyles();
 
   const handleClose = () =>  onClose();
@@ -59,9 +62,16 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
   
     e.target.value = "";
   };
+
+  const handleFormSubmit = () => {
+    setLoading(true)
+
+    setLoading(false)
+    setIsSubmitted(true);
+  }
  
   return (
-    <Dialog onClose={handleClose} open={open} maxWidth={"sm"} classes={{ paper: classes.dialog }} >
+    <Dialog onClose={handleClose} open={open} maxWidth={"sm"} fullWidth classes={{ paper: classes.dialog }} >
       <DialogTitle>
         <Typography gutterBottom variant="h5" component="div" fontWeight={800}>
           Here to help
@@ -82,7 +92,7 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
 
       <DialogActions>
         <Stack direction={"row"} justifyContent={'space-between'} alignItems={'center'} gap={4} width={"100%"} px={2} pb={1}>
-          <Button variant="contained" sx={{borderRadius: "10px", height: "fit-content", backgroundColor: feedback.content ? "rgba(96, 36, 216, 1)" : "rgba(212, 212, 212, 1)"}}>Post Feedback</Button>
+          <Button loading={loading} loadingPosition="start" variant="contained" sx={{borderRadius: "10px", height: "fit-content", backgroundColor: feedback.content ? "rgba(96, 36, 216, 1)" : "rgba(212, 212, 212, 1)"}} onClick={handleFormSubmit} >Post Feedback</Button>
           
           <Stack direction={"row"} alignItems={'center'} gap={1}>
             <Button component="label" role={undefined} variant="text" tabIndex={-1}>
@@ -108,34 +118,25 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
 }
 
 export default function FeedbackChatbox() {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
     <div>
       <Button variant="text" onClick={handleClickOpen}>
-        <svg
-          width="75"
-          height="75"
-          viewBox="0 0 75 75"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width="75" height="75" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg" >
           <rect width="75" height="75" rx="37.5" fill="#BC99FF" />
-          <path
-            d="M37.5748 22.1938C48.634 22.1938 56.1687 33.3996 51.9961 43.6414L50.2123 48.0198C50.0527 48.4116 50.1694 48.8617 50.4992 49.1266L54.2712 52.1559C54.5877 52.4101 54.7094 52.8363 54.5746 53.2193C54.4399 53.6022 54.0782 53.8584 53.6722 53.8584H38.7099C29.4828 53.8584 22.0026 46.3783 22.0026 37.1511C22.0026 28.8904 28.6992 22.1938 36.9599 22.1938H37.5748Z"
-            fill="white"
-          />
+          <path d="M37.5748 22.1938C48.634 22.1938 56.1687 33.3996 51.9961 43.6414L50.2123 48.0198C50.0527 48.4116 50.1694 48.8617 50.4992 49.1266L54.2712 52.1559C54.5877 52.4101 54.7094 52.8363 54.5746 53.2193C54.4399 53.6022 54.0782 53.8584 53.6722 53.8584H38.7099C29.4828 53.8584 22.0026 46.3783 22.0026 37.1511C22.0026 28.8904 28.6992 22.1938 36.9599 22.1938H37.5748Z" fill="white" />
         </svg>
       </Button>
-      <FeedbackChatDialog open={open} onClose={handleClose} />
+      
+      {
+        isSubmitted ? <SubmittedPage open={open} onClose={handleClose} setIsSubmitted={setIsSubmitted}  /> : <FeedbackChatDialog open={open} onClose={handleClose} setIsSubmitted={setIsSubmitted} />
+      }
+      
     </div>
   );
 }
