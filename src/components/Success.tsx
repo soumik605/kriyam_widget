@@ -6,7 +6,7 @@ interface SubmitPageProps {
   setIsSubmitted: (value: boolean) => void
 }
 
-const SubmittedPage = (props: SubmitPageProps) => {
+const Success = (props: SubmitPageProps) => {
   const { open, onClose, setIsSubmitted } = props
 
   const handleClose = () => {
@@ -42,4 +42,4 @@ const SubmittedPage = (props: SubmitPageProps) => {
   )
 }
 
-export default SubmittedPage
+export default Success
