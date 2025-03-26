@@ -43,26 +43,42 @@ const VisuallyHiddenInput = styled('input')({
 
 type FeedbackState = {
   content: string;
-  files: File[];
+  attachments: { id: number; attachment: File; type: "photo" | "video" | "file" }[];
 };
 
 function FeedbackChatDialog(props: FeedbackChatDialogProps) {
-  const [feedback, setFeedback] = useState<FeedbackState>({ content: "", files: [] });
+  const [feedback, setFeedback] = useState<FeedbackState>({ content: "", attachments: [] });
   const [loading, setLoading] = useState(false)
 
   const { onClose, open, setIsSubmitted, setError } = props;
   const classes = useStyles();
 
+  const getFileType = (file: File): "photo" | "video" | "file" => {
+    if (file.type.startsWith("image/")) return "photo";
+    if (file.type.startsWith("video/")) return "video";
+    return "file";
+  };
+
   const handleClose = () =>  onClose();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const newFiles = Array.from(e.target.files);
+    
+    setFeedback((prev) => {
+      const currentAttachments = prev.attachments;
+      const startId = currentAttachments.length > 0 ? currentAttachments[currentAttachments.length - 1].id + 1 : 0;
   
-    setFeedback((prev) => ({
-      ...prev,
-      files: [...prev.files, ...newFiles],
-    }));
+      const newFiles = Array.from(e.target.files || []).map((file, index) => ({
+        id: startId + index,
+        attachment: file, 
+        type: getFileType(file),
+      }));
+  
+      return {
+        ...prev,
+        attachments: [...currentAttachments, ...newFiles],
+      };
+    });
   
     e.target.value = "";
   };
@@ -73,9 +89,9 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
 
       const formData = new FormData();
       formData.append("content", feedback.content);
-      if(feedback.files.length > 0){
-        feedback.files.forEach((file, index) => {
-          formData.append(`images[${index}]`, file);
+      if(feedback.attachments.length > 0){
+        feedback.attachments.forEach((attachment, index) => {
+          formData.append(`images[${index}]`, attachment.attachment);
         });
       }
       

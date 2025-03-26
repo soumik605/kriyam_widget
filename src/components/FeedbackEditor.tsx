@@ -6,8 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { makeStyles } from "@mui/styles";
 
 interface FeedbackEditorProps {
-  feedback: { content: string; files: File[] };
-  setFeedback: (newFeedback: { content: string; files: File[] }) => void;
+  feedback: { content: string; attachments: { id: number; attachment: File; type: "photo" | "video" | "file" }[] };
+  setFeedback: (newFeedback: { content: string; attachments: { id: number; attachment: File; type: "photo" | "video" | "file" }[] }) => void;
 }
 
 const useStyles = makeStyles({
@@ -25,35 +25,43 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
   const [showImageModal, setShowImageModal] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0)
   const classes = useStyles();
-
-  const feedback_files = feedback.files
-  const photos = feedback_files.filter(file => {
-    const { type } = file;
-    return type.startsWith("image/")
-  })
+  const feedback_attachments = feedback.attachments
+  const photos = feedback_attachments.filter(file => file.type == "photo")
 
 
   const toggleImageModal = () => {
     setShowImageModal(!showImageModal);
   }
 
-  const openImageModal = (index: number) => {
-    setActiveIndex(index)
+  const openImageModal = (id: number) => {
+    setActiveIndex(id)
     setShowImageModal(true);
   }
 
   const handleRemoveImage = (index: number) => {
-    const newList = photos.filter((_, i) => index !== i);
-    setFeedback({...feedback, files: newList});
+    const newList = feedback_attachments.filter((photo) => index !== photo.id);
+    setFeedback({...feedback, attachments: newList});
   }
   
   const handleFeedbackContentChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => setFeedback({...feedback,content: e.target.value})
-  const prevSlide = () => setActiveIndex((prevIndex) => prevIndex === 0 ? (photos.length - 1) : prevIndex - 1);
-  const nextSlide = () => setActiveIndex((prevIndex) => prevIndex === (photos.length - 1) ? 0 : prevIndex + 1);
+
+  const prevSlide = () => {
+    const currentIndex = photos.findIndex(photo => photo.id === activeIndex);
+    if (currentIndex === -1) return null; 
+    const id = photos[(currentIndex + 1) % photos.length].id;
+    setActiveIndex(id)
+  }
+
+  const nextSlide = () => {
+    const currentIndex = photos.findIndex(photo => photo.id === activeIndex);
+    if (currentIndex === -1) return null;
+    const id = photos[(currentIndex - 1 + photos.length) % photos.length].id;
+    setActiveIndex(id)
+  }
 
   useEffect(() => {
     if (!photos || photos.length === 0) {
-      console.log("Files not available yet.");
+      console.log("attachments not available yet.");
       return;
     }
 
@@ -68,16 +76,14 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
 
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
+    <Box>
       <TextField value={feedback.content} onChange={handleFeedbackContentChange} id="filled-multiline-static" multiline rows={4} label="Describe the issue in details" variant="filled" fullWidth />
       
       <Box pt={2}>
-      {feedback_files.map((attachment, index) => {
-          const { type } = attachment;
-
-          return (<Stack gap={1} key={index} direction={'row'} pt={1} justifyContent={'flex-end'} alignItems={'center'}>
-              {type.startsWith("image/") && <Button size="small" sx={{backgroundColor: "rgba(222, 210, 238, 1)", color: "black", borderRadius: "20px"}} variant="contained" startIcon={<PlayArrowIcon sx={{color: "rgba(96, 36, 216, 1)", mr: 1}} />} onClick={()=>openImageModal(index)}>Preview</Button>}
-              <Button size="small" sx={{backgroundColor: "rgba(255, 227, 227, 1)", color: "rgb(224, 36, 36)", borderRadius: "20px"}} variant="contained" startIcon={<DeleteIcon />} onClick={() => handleRemoveImage(index)}>Delete</Button>
+      {feedback_attachments.map((attachment) => {
+          return (<Stack gap={1} key={attachment.id} direction={'row'} pt={1} justifyContent={'flex-end'} alignItems={'center'}>
+              {attachment.type == "photo" && <Button size="small" sx={{backgroundColor: "rgba(222, 210, 238, 1)", color: "black", borderRadius: "20px"}} variant="contained" startIcon={<PlayArrowIcon sx={{color: "rgba(96, 36, 216, 1)", mr: 1}} />} onClick={()=>openImageModal(attachment.id)}>Preview</Button>}
+              <Button size="small" sx={{backgroundColor: "rgba(255, 227, 227, 1)", color: "rgb(224, 36, 36)", borderRadius: "20px"}} variant="contained" startIcon={<DeleteIcon />} onClick={() => handleRemoveImage(attachment.id)}>Delete</Button>
             </Stack>)
         })}
       </Box>
@@ -87,11 +93,11 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
           <Dialog fullWidth onClose={toggleImageModal} open={showImageModal} maxWidth={"lg"} classes={{ paper: classes.dialog }} >
             <DialogContent sx={{p: 0.5}}>
               
-              {photos.map((file, index) => {
-                  if (activeIndex === index) {
+              {photos.map((file) => {
+                  if (activeIndex === file.id) {
                     return (
-                      <Box key={index} width={"100%"} height={600}>
-                        <img src={URL.createObjectURL(file)} style={{width: "100%", height: "100%", objectFit: "contain", borderRadius: "10px"}} />
+                      <Box key={file.id} width={"100%"} height={600}>
+                        <img src={URL.createObjectURL(file.attachment)} style={{width: "100%", height: "100%", objectFit: "contain", borderRadius: "10px"}} />
                       </Box>
                     );
                   }
@@ -108,6 +114,6 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
 
           </Dialog>
       }
-    </div>
+    </Box>
   );
 }
