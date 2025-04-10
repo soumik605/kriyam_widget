@@ -1,8 +1,11 @@
 {
-  "name": "widget",
-  "private": true,
-  "version": "0.0.0",
+  "name": "kriyam_widget",
+  "private": false,
+  "version": "0.0.1",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
