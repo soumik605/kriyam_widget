@@ -6,6 +6,7 @@ declare global {
     xLpNBa?: string;
     xLpNBb?: string;
     xLpNBc?: string;
+    feedback_url?: string;
   }
 }
 import Button from "@mui/material/Button";
@@ -109,18 +110,18 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
 
   const handleFormSubmit = async () => {
 
-    console.log("--------------");
-    console.log("window", window)
-    if (typeof window !== "undefined") {
-      const xLpNBa = decryptToken(window.xLpNBa ?? "");
-      console.log(xLpNBa);
-      const xLpNBb = decryptToken(window.xLpNBb ?? "");
-      console.log(xLpNBb);
-      const xLpNBc = decryptToken(window.xLpNBc ?? "");
-      console.log(xLpNBc);
-    }
-    console.log("--------------");
+    let license_key = ""
+    let email = ""
+    let name = ""
+    let feedback_url = ""
 
+    if (typeof window !== "undefined") {
+      license_key = decryptToken(window.xLpNBa ?? "");
+      email = decryptToken(window.xLpNBb ?? "");
+      name = decryptToken(window.xLpNBc ?? "");
+      feedback_url = decryptToken(window.feedback_url ?? "");
+    }
+    
 
     if(feedback.content.trim()) {
       setLoading(true)
@@ -132,14 +133,14 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
           formData.append(`feedback[files][]`, attachment.attachment);
         });
       }
-      formData.append("feedback[license_key]", "eyJhbGciOiJSUzI1NiJ9.eyJjbGllbnRfaWQiOjEsInZhbGlkX2Zyb20iOiIyMDI1LTAzLTAxIiwidmFsaWRfdG8iOiIyMDI2LTA0LTMwIiwic3RhdHVzIjoiYWN0aXZlIn0.c_aRokh7l5FHm4Pmi9Ih14QYryCLA05PBaWsh7yqVqkErD4v_yK3LsgbwW91K63jq6kj-6rvhI1l09W02YIJeeyRA3yPNXwVvEOGoQCoPeS9Ynz-2SVAeskFr5mll5ihrLzrrGnKhFOWKEJrFdahsdj6NXHhnzk7jUYg0kM6J63Lz-b_88rF5k3CdzlbU09O5_1ZvhI7Gh8J-JUcPk6BZ0YFrjPGpiyUqrdhCx9c7wM131lNzm3I0VIR0JN3nZwWBK0EQNRrfTmoA4YjXFjQfDGb8ozr2b3RQLEcAMX1CtpUftuSPqiD_20TszCeSJgQV-ilSg47Ins-MvjLifdGsg");
-      formData.append("feedback[reporter_email]", "soumik@gmail.com");
-      formData.append("feedback[reporter_name]", "Soumik Maity");
+      formData.append("feedback[license_key]", license_key);
+      formData.append("feedback[reporter_email]", email);
+      formData.append("feedback[reporter_name]", name);
       formData.append("feedback[platform]", "Kriyam");
       formData.append("feedback[feedback_type]", "");
 
       try {
-        await axios({method: "post", url: "http://135.181.214.169:3039/api/feedbacks", data: formData, headers: { "Content-Type": "multipart/form-data" }, withCredentials: true})
+        await axios({method: "post", url: feedback_url, data: formData, headers: { "Content-Type": "multipart/form-data" }, withCredentials: true})
           .then((response) => {
             console.log(response);
             setError("")
