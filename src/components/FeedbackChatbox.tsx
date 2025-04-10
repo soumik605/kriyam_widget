@@ -164,7 +164,7 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
   }
  
   return (
-    <Dialog onClose={handleClose} open={open} maxWidth={"sm"} fullWidth classes={{ paper: classes.dialog }} >
+    <Dialog onClose={handleClose} open={open} maxWidth={"sm"} fullWidth classes={{ paper: classes.dialog }} className="z-20" >
       <DialogTitle>
         <Typography gutterBottom variant="h5" component="div" fontWeight={800}>
           Here to help
