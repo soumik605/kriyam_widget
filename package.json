@@ -1,7 +1,7 @@
 {
   "name": "kriyam_widget",
   "private": false,
-  "version": "0.0.14",
+  "version": "0.0.15",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,11 +23,13 @@
     "@mui/material": "^6.4.8",
     "@mui/styles": "^6.4.8",
     "axios": "^1.8.4",
+    "crypto-js": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

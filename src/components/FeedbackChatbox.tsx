@@ -1,4 +1,13 @@
 import React, {useState} from "react";
+
+// Extend the Window interface to include custom properties
+declare global {
+  interface Window {
+    xLpNBa?: string;
+    xLpNBb?: string;
+    xLpNBc?: string;
+  }
+}
 import Button from "@mui/material/Button";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -9,6 +18,21 @@ import FeedbackEditor from "./FeedbackEditor";
 import SubmittedPage from "./Success";
 import axios from "axios";
 import Error from "./Error";
+import CryptoJS from "crypto-js";
+
+
+function decryptToken(encrypted: string) {
+  const key = CryptoJS.enc.Utf8.parse("this_is_a_32_byte_key_1234567890");
+  const iv = CryptoJS.enc.Utf8.parse("this_is_a_16_byt");
+
+  const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+
+  return decrypted.toString(CryptoJS.enc.Utf8);
+}
 
 export interface FeedbackChatDialogProps {
   open: boolean;
@@ -84,6 +108,20 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
   };
 
   const handleFormSubmit = async () => {
+
+    console.log("--------------");
+    console.log("window", window)
+    if (typeof window !== "undefined") {
+      const xLpNBa = decryptToken(window.xLpNBa ?? "");
+      console.log(xLpNBa);
+      const xLpNBb = decryptToken(window.xLpNBb ?? "");
+      console.log(xLpNBb);
+      const xLpNBc = decryptToken(window.xLpNBc ?? "");
+      console.log(xLpNBc);
+    }
+    console.log("--------------");
+
+
     if(feedback.content.trim()) {
       setLoading(true)
 
