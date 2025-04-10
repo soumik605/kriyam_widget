@@ -1,4 +1,4 @@
-import { Box, Stack, TextField, Dialog, DialogContent, Button, IconButton, DialogActions } from "@mui/material";
+import { Box, Stack, TextField, Dialog, DialogContent, Button, IconButton, DialogActions, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,8 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { makeStyles } from "@mui/styles";
 
 interface FeedbackEditorProps {
-  feedback: { content: string; attachments: { id: number; attachment: File; type: "photo" | "video" | "file" }[] };
-  setFeedback: (newFeedback: { content: string; attachments: { id: number; attachment: File; type: "photo" | "video" | "file" }[] }) => void;
+  feedback: { content: string; attachments: { id: number; attachment: File; type: "photo" | "video" | "file", filename: string }[] };
+  setFeedback: (newFeedback: { content: string; attachments: { id: number; attachment: File; type: "photo" | "video" | "file", filename: string }[] }) => void;
 }
 
 const useStyles = makeStyles({
@@ -81,10 +81,15 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
       
       <Box pt={2}>
       {feedback_attachments.map((attachment) => {
-          return (<Stack gap={1} key={attachment.id} direction={'row'} pt={1} justifyContent={'flex-end'} alignItems={'center'}>
-              {attachment.type == "photo" && <Button size="small" sx={{backgroundColor: "rgba(222, 210, 238, 1)", color: "black", borderRadius: "20px"}} variant="contained" startIcon={<PlayArrowIcon sx={{color: "rgba(96, 36, 216, 1)", mr: 1}} />} onClick={()=>openImageModal(attachment.id)}>Preview</Button>}
-              <Button size="small" sx={{backgroundColor: "rgba(255, 227, 227, 1)", color: "rgb(224, 36, 36)", borderRadius: "20px"}} variant="contained" startIcon={<DeleteIcon />} onClick={() => handleRemoveImage(attachment.id)}>Delete</Button>
-            </Stack>)
+          return (
+            <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={6} pt={1}>
+              <Typography variant="body2" fontSize={13}>{attachment.filename}</Typography>
+              <Stack gap={1} key={attachment.id} direction={'row'} justifyContent={'flex-end'} alignItems={'center'}>
+                {attachment.type == "photo" && <Button size="small" sx={{backgroundColor: "rgba(222, 210, 238, 1)", color: "black", borderRadius: "20px"}} variant="contained" startIcon={<PlayArrowIcon sx={{color: "rgba(96, 36, 216, 1)", mr: 1}} />} onClick={()=>openImageModal(attachment.id)}>Preview</Button>}
+                <Button size="small" sx={{backgroundColor: "rgba(255, 227, 227, 1)", color: "rgb(224, 36, 36)", borderRadius: "20px"}} variant="contained" startIcon={<DeleteIcon />} onClick={() => handleRemoveImage(attachment.id)}>Delete</Button>
+              </Stack>
+            </Stack>
+          )
         })}
       </Box>
 
@@ -107,7 +112,7 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
             </DialogContent>
 
             <DialogActions sx={{p: 0}}>
-              <IconButton sx={{position: "absolute", top: "0px", right: "0px", transform: "translate(50%, -50%)", backgroundColor: "black"}} size="small">
+              <IconButton sx={{position: "absolute", top: "0px", right: "0px", transform: "translate(50%, -50%)", backgroundColor: "black", "&:hover": {backgroundColor: "black", color: "white"}  }} size="small">
                 <CloseIcon onClick={toggleImageModal} sx={{color: "white"}} />
               </IconButton>
             </DialogActions>

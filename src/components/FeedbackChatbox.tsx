@@ -68,7 +68,7 @@ const VisuallyHiddenInput = styled('input')({
 
 type FeedbackState = {
   content: string;
-  attachments: { id: number; attachment: File; type: "photo" | "video" | "file" }[];
+  attachments: { id: number; attachment: File; type: "photo" | "video" | "file"; filename: string }[];
 };
 
 function FeedbackChatDialog(props: FeedbackChatDialogProps) {
@@ -78,10 +78,14 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
   const { onClose, open, setIsSubmitted, setError } = props;
   const classes = useStyles();
 
-  const getFileType = (file: File): "photo" | "video" | "file" => {
+  const getFileType = (file: File): "photo" | "video" | "file" => {    
     if (file.type.startsWith("image/")) return "photo";
     if (file.type.startsWith("video/")) return "video";
     return "file";
+  };
+
+  const getFileName = (file: File) => {    
+    return file.name;
   };
 
   const handleClose = () =>  onClose();
@@ -97,6 +101,7 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
         id: startId + index,
         attachment: file, 
         type: getFileType(file),
+        filename: getFileName(file),
       }));
   
       return {
@@ -121,7 +126,6 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
       name = decryptToken(window.xLpNBc ?? "");
       feedback_url = decryptToken(window.feedback_url ?? "");
     }
-    
 
     if(feedback.content.trim()) {
       setLoading(true)
