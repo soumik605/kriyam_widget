@@ -144,20 +144,23 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
       formData.append("feedback[platform]", "Kriyam");
       formData.append("feedback[feedback_type]", "");
 
-      try {
-        await axios({method: "post", url: feedback_url, data: formData, headers: { "Content-Type": "multipart/form-data" }, withCredentials: true})
-          .then((response) => {
-            console.log(response);
-            setError("")
-          })
-          .catch((err) => {
-            console.error(err.message);
-            setError(err.message)
-          });
-      } catch(err) {
-        setError("Error !!")
-        console.error(err);
-      }
+      await axios({method: "post", url: feedback_url, data: formData, headers: { "Content-Type": "multipart/form-data" }, withCredentials: true})
+        .then((response) => {
+          console.log(response);
+          setError("")
+        })
+        .catch((err) => {
+          console.error(err.message);
+          setError(err.message)
+        });
+
+
+        
+      // try {
+      // } catch(err) {
+      //   setError("Error !!")
+      //   console.error(err);
+      // }
   
       setLoading(false)
       setIsSubmitted(true);
