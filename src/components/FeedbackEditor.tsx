@@ -1,4 +1,4 @@
-import { Box, Stack, TextField, Dialog, DialogContent, Button, IconButton, DialogActions, Typography } from "@mui/material";
+import { Box, Stack, Dialog, DialogContent, Button, IconButton, DialogActions, Typography, InputBase } from "@mui/material";
 import { useState, useEffect } from "react";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -77,7 +77,22 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
 
   return (
     <Box>
-      <TextField value={feedback.content} onChange={handleFeedbackContentChange} id="filled-multiline-static" multiline rows={4} label="Describe the issue in details" variant="filled" fullWidth />
+      
+      <Box sx={{ boxShadow: 2, px: 2, borderRadius: "6px" }}>
+        <InputBase
+          fullWidth
+          placeholder="Describe the issue in details"
+          inputProps={{ 'aria-label': 'feedback comment' }}
+          multiline
+          autoFocus
+          rows={5}
+          sx={{fontSize: 14}}
+          value={feedback.content} 
+          onChange={handleFeedbackContentChange}
+        />
+
+        {/* <TextField value={feedback.content} onChange={handleFeedbackContentChange} id="filled-multiline-static" sx={{fontSize: 12}} multiline rows={4} placeholder="Describe the issue in details" variant="standard" fullWidth /> */}
+      </Box>
       
       <Box pt={2}>
       {feedback_attachments.map((attachment) => {
@@ -85,7 +100,7 @@ export default function FeedbackEditor(props: FeedbackEditorProps) {
             <Stack direction={'row'} justifyContent={'space-between'} alignItems={'center'} spacing={6} pt={1}>
               <Typography variant="body2" fontSize={13}>{attachment.filename}</Typography>
               <Stack gap={1} key={attachment.id} direction={'row'} justifyContent={'flex-end'} alignItems={'center'}>
-                {attachment.type == "photo" && <Button size="small" sx={{backgroundColor: "rgba(222, 210, 238, 1)", color: "black", borderRadius: "20px"}} variant="contained" startIcon={<PlayArrowIcon sx={{color: "rgba(96, 36, 216, 1)", mr: 1}} />} onClick={()=>openImageModal(attachment.id)}>Preview</Button>}
+                {attachment.type == "photo" && <Button size="small" sx={{backgroundColor: "rgba(222, 210, 238, 1)", color: "black", borderRadius: "20px"}} variant="contained" startIcon={<PlayArrowIcon sx={{color: "rgba(96, 36, 216, 1)", mr: 0}} />} onClick={()=>openImageModal(attachment.id)}>Preview</Button>}
                 <Button size="small" sx={{backgroundColor: "rgba(255, 227, 227, 1)", color: "rgb(224, 36, 36)", borderRadius: "20px"}} variant="contained" startIcon={<DeleteIcon />} onClick={() => handleRemoveImage(attachment.id)}>Delete</Button>
               </Stack>
             </Stack>

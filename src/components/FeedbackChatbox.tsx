@@ -50,6 +50,7 @@ const useStyles = makeStyles({
     "&": {
       position: "absolute !important",
       maxHeight: "70vh !important",
+      borderRadius: "10px !important",
     },
   },
 });
@@ -164,15 +165,15 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
   }
  
   return (
-    <Dialog onClose={handleClose} open={open} maxWidth={"sm"} fullWidth classes={{ paper: classes.dialog }} className="z-20" >
+    <Dialog onClose={handleClose} open={open} maxWidth={"xs"} fullWidth classes={{ paper: classes.dialog }} className="z-20" >
       <DialogTitle>
-        <Typography gutterBottom variant="h5" component="div" fontWeight={800}>
+        <Typography gutterBottom variant="h5" component="div" fontWeight={800} fontFamily="'Poppins', sans-serif">
           Here to help
         </Typography>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body1" fontFamily="'Poppins', sans-serif" gutterBottom>
           We can help you clarify any doubts or you can share any feedback here.
         </Typography>
-        <Typography variant="body2" fontWeight={600}>
+        <Typography variant="body2" fontSize={12} fontWeight={600} fontFamily="'Poppins', sans-serif">
           Please make sure to add the screenshots or screen recordings of the
           issue, this will help us understand better Describe the issue in
           details Post Feedback
@@ -183,11 +184,11 @@ function FeedbackChatDialog(props: FeedbackChatDialogProps) {
         <FeedbackEditor feedback={feedback} setFeedback={setFeedback} />
       </DialogContent>
 
-      <DialogActions>
-        <Stack direction={"row"} justifyContent={'space-between'} alignItems={'center'} gap={4} width={"100%"} px={2} pb={1}>
-          <Button loading={loading} loadingPosition="start" variant="contained" sx={{borderRadius: "10px", height: "fit-content", backgroundColor: feedback.content ? "rgba(96, 36, 216, 1)" : "rgba(212, 212, 212, 1)"}} onClick={handleFormSubmit} >Post Feedback</Button>
+      <DialogActions sx={{px: 3}}>
+        <Stack direction={"row"} justifyContent={'space-between'} alignItems={'center'} gap={4} width={"100%"} pb={1}>
+          <Button loading={loading} loadingPosition="start" variant="contained" sx={{borderRadius: "10px", height: "fit-content", backgroundColor: (feedback.content && feedback.content.length > 2) ? "rgba(30, 30, 30, 1)" : "rgba(212, 212, 212, 1)"}} onClick={handleFormSubmit} >Post Feedback</Button>
           
-          <Stack direction={"row"} alignItems={'center'} gap={2} py={1}>
+          <Stack direction={"row"} alignItems={'center'} gap={1} py={1}>
             <IconButton component="label" role={undefined} tabIndex={-1} sx={{p: 0}}>
               <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="48" rx="24" fill="#DCEEFF" />
@@ -221,9 +222,9 @@ export default function FeedbackChatbox() {
   return (
     <div>
       <IconButton onClick={handleClickOpen}>
-        <svg width="75" height="75" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg" >
-          <rect width="75" height="75" rx="37.5" fill="#BC99FF" />
-          <path d="M37.5748 22.1938C48.634 22.1938 56.1687 33.3996 51.9961 43.6414L50.2123 48.0198C50.0527 48.4116 50.1694 48.8617 50.4992 49.1266L54.2712 52.1559C54.5877 52.4101 54.7094 52.8363 54.5746 53.2193C54.4399 53.6022 54.0782 53.8584 53.6722 53.8584H38.7099C29.4828 53.8584 22.0026 46.3783 22.0026 37.1511C22.0026 28.8904 28.6992 22.1938 36.9599 22.1938H37.5748Z" fill="white" />
+        <svg width="75" height="75" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="75" height="75" rx="37.5" fill="#A9A9A9"/>
+          <path d="M37.5748 22.1938C48.634 22.1938 56.1687 33.3996 51.9961 43.6414L50.2123 48.0198C50.0527 48.4116 50.1694 48.8617 50.4992 49.1266L54.2712 52.1559C54.5877 52.4101 54.7094 52.8363 54.5746 53.2193C54.4399 53.6022 54.0782 53.8584 53.6722 53.8584H38.7099C29.4828 53.8584 22.0026 46.3783 22.0026 37.1511C22.0026 28.8904 28.6992 22.1938 36.9599 22.1938H37.5748Z" fill="white"/>
         </svg>
       </IconButton>
       
